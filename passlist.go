@@ -1,3 +1,9 @@
+/**
+	Copyright (C) 2019 M.Watermann, D-10247 Berlin, FRG
+			All rights reserved
+		EMail : <support@mwat.de>
+**/
+
 package passlist
 
 import (
@@ -28,7 +34,7 @@ func Deny(aRealm string, aWriter http.ResponseWriter) {
 	http.Error(aWriter, "401 Unauthorised", http.StatusUnauthorized)
 } // Deny()
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 type (
 	// `tUserMap` is a password list indexed by username
@@ -53,10 +59,10 @@ type TPassList tPassList
 // `aPassword` is the user's password to store.
 func (ul *TPassList) Add(aUser, aPassword string) error {
 	if 0 == len(aUser) {
-		return errors.New("userlist: missing username")
+		return errors.New("TPassList.Add(): missing username")
 	}
 	if 0 == len(aPassword) {
-		return errors.New("userlist: missing password")
+		return errors.New("TPassList.Add(): missing password")
 	}
 	//NOTE: the greater the cost factor below the slower it becomes
 	hash, err := bcrypt.GenerateFromPassword([]byte(aPassword), 6)
@@ -124,8 +130,7 @@ func (ul *TPassList) IsAuthenticated(aRequest *http.Request) bool {
 	if !ok {
 		return false
 	}
-	err := bcrypt.CompareHashAndPassword([]byte(pwHash), []byte(pass))
-	if nil != err {
+	if err := bcrypt.CompareHashAndPassword([]byte(pwHash), []byte(pass)); nil != err {
 		return false
 	}
 	// store the user info so others can check for it
@@ -154,8 +159,8 @@ func (ul *TPassList) List() (rList []string) {
 	return
 } // List()
 
-// Load reads the password file named in `LoadPasswords()` or `NewList()`
-// replacing any older list's contents with the file's.
+// Load reads the password file named in `LoadPasswords()` or
+// `NewList()` replacing any older list's contents with the file's.
 func (ul *TPassList) Load() error {
 	if 0 == len(ul.filename) {
 		return errors.New("Load: missing filename")
@@ -169,15 +174,16 @@ func (ul *TPassList) Load() error {
 
 	scanner := bufio.NewScanner(file)
 	_, err = ul.Clear().read(scanner)
+
 	return err
 } // Load()
 
-// MatchesPass checks whether `aPassword` of `aUser` matches the
-// stored password.
+// MatchesPass checks whether `aPassword` of `aUser` matches
+// the stored password.
 //
 // `aUser` the username to lookup.
 //
-// `aPassword` the password to check.
+// `aPassword` the (unhashed) password to check.
 func (ul *TPassList) MatchesPass(aUser, aPassword string) (rOK bool) {
 	hash1, ok := ul.um[aUser]
 	if !ok {
@@ -238,10 +244,10 @@ func (ul *TPassList) Remove(aUser string) *TPassList {
 //
 func (ul *TPassList) Store() (int, error) {
 	if 0 == len(ul.filename) {
-		return 0, errors.New("Store(): missing filename")
+		return 0, errors.New("TPassList.Store(): missing filename")
 	}
-	// To keep the file-open time as small as possible we prepare
-	// the data to write beforehand:
+	// To keep the file-open time as small as possible we
+	// prepare the data to write beforehand:
 	s := []byte(ul.String())
 
 	file, err := os.Create(ul.filename)
@@ -284,7 +290,7 @@ func (ul *TPassList) string0() string {
 	return result.String()
 } // string0()
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 type (
 	// TAuthDecider is an interface deciding whether a given URL
@@ -316,13 +322,14 @@ func (ad TAuthNeeder) NeedAuthentication(aRequest *http.Request) bool {
 	return true
 } // NeedAuthentication
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-// LoadPasswords reads the given `aFilename` returning a `TUserList` instance
-// filled with data read from the password file and a possible error condition.
+// LoadPasswords reads the given `aFilename` returning a `TUserList`
+// instance filled with data read from the password file and a possible
+// error condition.
 //
-// This function reads one line at a time of the password file skipping both
-// empty lines and comments (identified by '#' or ';' at line start).
+// This function reads one line at a time of the password file skipping
+// both empty lines and comments (identified by '#' or ';' at line start).
 //
 // `aFilename` is the name of the password file to read.
 func LoadPasswords(aFilename string) (*TPassList, error) {
@@ -344,11 +351,11 @@ func NewList(aFilename string) *TPassList {
 	return result
 } // NewList()
 
-// Wrap returns a handler function that includes authentication, wrapping
-// the given `aHandler` and calling it internally.
+// Wrap returns a handler function that includes authentication,
+// wrapping the given `aHandler` and calling it internally.
 //
-// `aHandler` responds to the actual HTTP request;
-// this is the handler to be called after successful authentication.
+// `aHandler` responds to the actual HTTP request; this is
+// the handler to be called after successful authentication.
 //
 // `aRealm` is the symbolic name of the domain/host to protect.
 //
