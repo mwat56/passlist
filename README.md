@@ -61,7 +61,7 @@ In the package's `_demo` folder you'll find the `pwaccess.go` program which impl
 
 ## Licence
 
-    Copyright (C) 2019  M.Watermann, 10247 Berlin, FRG
+    Copyright © 2019  M.Watermann, 10247 Berlin, Germany
                 All rights reserved
             EMail : <support@mwat.de>
 

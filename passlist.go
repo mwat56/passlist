@@ -1,7 +1,7 @@
 /**
-	Copyright (C) 2019 M.Watermann, D-10247 Berlin, FRG
-			All rights reserved
-		EMail : <support@mwat.de>
+    Copyright © 2019  M.Watermann, 10247 Berlin, Germany
+                All rights reserved
+            EMail : <support@mwat.de>
 **/
 
 package passlist
