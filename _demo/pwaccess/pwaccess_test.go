@@ -26,11 +26,15 @@ func Test_run(t *testing.T) {
 	}
 	al4 := tArgumentList{
 		"filename": fn,
-		"remove":   u2,
+		"chk":      u1,
 	}
 	al5 := tArgumentList{
 		"filename": fn,
-		"update":   u3,
+		"del":      u2,
+	}
+	al6 := tArgumentList{
+		"filename": fn,
+		"upd":      u3,
 	}
 	type args struct {
 		aArgs tArgumentList
@@ -45,7 +49,8 @@ func Test_run(t *testing.T) {
 		{" 2", args{al2}, false},
 		{" 3", args{al3}, false},
 		{" 4", args{al4}, true},
-		{" 5", args{al5}, false},
+		{" 5", args{al5}, true},
+		{" 6", args{al6}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
