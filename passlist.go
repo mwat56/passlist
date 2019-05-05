@@ -342,13 +342,15 @@ func LoadPasswords(aFilename string) (*TPassList, error) {
 //
 // `aFilename` is the name of the password file to use for
 // `Load()` and `Store()`
-func NewList(aFilename string) *TPassList {
-	result := &TPassList{
-		/* um: */ make(tUserMap, 64),
-		/* filename: */ aFilename,
+func NewList(aFilename string) (rList *TPassList) {
+	if 0 < len(aFilename) {
+		rList = &TPassList{
+			/* um: */ make(tUserMap, 64),
+			/* filename: */ aFilename,
+		}
 	}
 
-	return result
+	return
 } // NewList()
 
 // Wrap returns a handler function that includes authentication,
