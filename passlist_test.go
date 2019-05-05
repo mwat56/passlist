@@ -7,27 +7,32 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func TestNewUserList(t *testing.T) {
+func TestNewList(t *testing.T) {
 	fn1 := "./testlist.db"
 	wl1 := &TPassList{
 		/* um: */ make(tUserMap),
 		/* filename: */ fn1,
 	}
+	type args struct {
+		aFilename string
+	}
 	tests := []struct {
-		name string
-		want *TPassList
+		name      string
+		args      args
+		wantRList *TPassList
 	}{
 		// TODO: Add test cases.
-		{" 1", wl1},
+		{" 1", args{fn1}, wl1},
+		{" 2", args{""}, nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewList(fn1); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewUserList() = %v, want %v", got, tt.want)
+			if gotRList := NewList(tt.args.aFilename); !reflect.DeepEqual(gotRList, tt.wantRList) {
+				t.Errorf("NewList() = %v, want %v", gotRList, tt.wantRList)
 			}
 		})
 	}
-} // TestNewUserList()
+} // TestNewList()
 
 // xxHash is an internal test helper
 func xxHash(aPassword string) string {
