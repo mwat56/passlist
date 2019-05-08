@@ -1,15 +1,18 @@
 # PassList
 
+[![GoDoc](https://godoc.org/github.com/mwat56/go-passlist?status.svg)](https://godoc.org/github.com/mwat56/go-passlist)
+
 ## Purpose
 
 Sometimes there is a need to password-protect your web-server, either in whole or just some parts of it.
-That's were this package comes in.
+That's were this little package comes in.
+It offers to simply integrate the popular [BasicAuth](https://en.wikipedia.org/wiki/Basic_access_authentication) mechanism into your own web-server.
 
 ## Installation
 
 You can use `Go` to install this package for you:
 
-    go get github.com/mwat56/go-passlist
+    go get -u github.com/mwat56/go-passlist
 
 ## Usage
 
@@ -41,6 +44,8 @@ You can create a new instance by either calling `passlist.LoadPasswords(aFilenam
 
 There's an additional convenience function called `passlist.Deny()` which sends an "Unauthorised" notice to the remote host in case the remote user couldn't be authenticated; this function is called internally whenever your `TAuthDecider` required authentication and wasn't given valid credentials from the remote user.
 
+Please refer to the [source code documentation](https://godoc.org/github.com/mwat56/go-passlist#TPassList) for further details ot the `TPassList` class.
+
 In the package's `_demo` folder you'll find the `pwaccess.go` program which implements the maintainance of password files with the following options:
 
     -add string
@@ -62,8 +67,8 @@ In the package's `_demo` folder you'll find the `pwaccess.go` program which impl
 ## Licence
 
     Copyright © 2019  M.Watermann, 10247 Berlin, Germany
-                All rights reserved
-            EMail : <support@mwat.de>
+                    All rights reserved
+                EMail : <support@mwat.de>
 
 > This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 >

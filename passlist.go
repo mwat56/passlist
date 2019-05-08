@@ -1,16 +1,14 @@
-/**
-    Copyright © 2019  M.Watermann, 10247 Berlin, Germany
-                All rights reserved
-            EMail : <support@mwat.de>
-**/
+/*
+   Copyright © 2019 M.Watermann, 10247 Berlin, Germany
+                   All rights reserved
+               EMail : <support@mwat.de>
+*/
 
 package passlist
 
 import (
 	"bufio"
-	"bytes"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -42,12 +40,12 @@ type (
 
 	// `tPassList` is the container for user map and filename.
 	tPassList struct {
-		um       tUserMap // list of user-password pairs
+		um       tUserMap // list of user/password pairs
 		filename string   // name of passwd file
 	}
 )
 
-// TPassList holds the list of username-password values.
+// TPassList holds the list of username/password values.
 type TPassList tPassList
 
 // Add inserts `aUser` with `aPassword` into the list.
@@ -117,7 +115,7 @@ func (ul *TPassList) Find(aUser string) (rHash string, rOK bool) {
 // returning `true` for successful authentication, or `false` otherwise.
 //
 // On success the username/password are stored in the `aRequest.URL.User`
-// structure to allow for other handlers check for its existence and act
+// structure to allow for other handlers checking its existence and act
 // accordingly.
 //
 // `aRequest` is an HTTP request received by a server.
@@ -178,13 +176,13 @@ func (ul *TPassList) Load() error {
 	return err
 } // Load()
 
-// MatchesPass checks whether `aPassword` of `aUser` matches
+// Matches checks whether `aPassword` of `aUser` matches
 // the stored password.
 //
 // `aUser` the username to lookup.
 //
 // `aPassword` the (unhashed) password to check.
-func (ul *TPassList) MatchesPass(aUser, aPassword string) (rOK bool) {
+func (ul *TPassList) Matches(aUser, aPassword string) (rOK bool) {
 	hash1, ok := ul.um[aUser]
 	if !ok {
 		return
@@ -192,19 +190,17 @@ func (ul *TPassList) MatchesPass(aUser, aPassword string) (rOK bool) {
 	err := bcrypt.CompareHashAndPassword([]byte(hash1), []byte(aPassword))
 
 	return (nil == err)
-} // MatchesPass()
+} // Matches()
 
 // read parses the a file using `aScanner`, returning
 // the number of bytes read and a possible error.
 //
 // This method reads one line of the file at a time skipping both
 // empty lines and comments (identified by '#' or ';' at line start).
-func (ul *TPassList) read(aScanner *bufio.Scanner) (int, error) {
-	var result int
-
+func (ul *TPassList) read(aScanner *bufio.Scanner) (rRead int, rErr error) {
 	for lineRead := aScanner.Scan(); lineRead; lineRead = aScanner.Scan() {
 		line := aScanner.Text()
-		result += len(line) + 1 // add trailing LF
+		rRead += len(line) + 1 // add trailing LF
 
 		line = strings.TrimSpace(line)
 		if 0 == len(line) {
@@ -224,8 +220,9 @@ func (ul *TPassList) read(aScanner *bufio.Scanner) (int, error) {
 			}
 		}
 	}
+	rErr = aScanner.Err()
 
-	return result, aScanner.Err()
+	return
 } // read()
 
 // Remove deletes `aUser` from the list.
@@ -275,21 +272,6 @@ func (ul *TPassList) String() string {
 	return strings.Join(list, "\n") + "\n"
 } // String()
 
-// string0 is the initial but slower implementation.
-func (ul *TPassList) string0() string {
-	if 0 == len(ul.um) {
-		return ""
-	}
-	var result bytes.Buffer
-	//NOTE: this implementation is ~3 times slower than the other one above
-
-	for name, pass := range ul.um {
-		result.WriteString(fmt.Sprintf("%s:%s\n", name, pass))
-	}
-
-	return result.String()
-} // string0()
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 type (
@@ -329,7 +311,7 @@ func (ad TAuthNeeder) NeedAuthentication(aRequest *http.Request) bool {
 // error condition.
 //
 // This function reads one line at a time of the password file skipping
-// both empty lines and comments (identified by '#' or ';' at line start).
+// both empty lines and comments (identified by `#` or `;` at line start).
 //
 // `aFilename` is the name of the password file to read.
 func LoadPasswords(aFilename string) (*TPassList, error) {

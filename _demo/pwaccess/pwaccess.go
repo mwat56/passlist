@@ -175,7 +175,7 @@ func run(aArgs tArgumentList) (rExit bool) {
 			return
 		}
 		pw := readPassword(false, quiet)
-		ok := ul.MatchesPass(chkuser, pw)
+		ok := ul.Matches(chkuser, pw)
 		if !quiet {
 			if ok {
 				pw = "successful"

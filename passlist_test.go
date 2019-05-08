@@ -365,19 +365,6 @@ func Benchmark_TUserList_String(b *testing.B) {
 	}
 } // Benchmark_TUserList_String()
 
-func Benchmark_TUserList_String0(b *testing.B) {
-	fn1 := "./testlist.db"
-	u1, p1 := "username1", "password1"
-	u2, p2 := "username2", "password2"
-	u3, p3 := "username3", "password3"
-	ul1 := NewList(fn1).add0(u1, p1).add0(u2, p2).add0(u3, p3)
-	for n := 0; n < b.N; n++ {
-		if 0 > len(ul1.string0()) {
-			continue
-		}
-	}
-} // Benchmark_TUserList_string0()
-
 func TestTUserList_Load(t *testing.T) {
 	fn1 := "./testlist.db"
 	u1, p1 := "username1", xxHash("password1")
