@@ -1,4 +1,4 @@
-module github.com/mwat56/go-passlist
+module github.com/mwat56/passlist
 
 require (
 	golang.org/x/crypto v0.0.0-20190506204251-e1dfcc566284
