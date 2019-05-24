@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/mwat56/go-passlist"
+	"github.com/mwat56/passlist"
 )
 
 func Test_run(t *testing.T) {

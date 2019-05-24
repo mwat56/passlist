@@ -1,6 +1,14 @@
 # PassList
 
-[![GoDoc](https://godoc.org/github.com/mwat56/go-passlist?status.svg)](https://godoc.org/github.com/mwat56/go-passlist)
+[![GoDoc](https://godoc.org/github.com/mwat56/passlist?status.svg)](https://godoc.org/github.com/mwat56/passlist)
+[![view examples](https://img.shields.io/badge/learn%20by-examples-0077b3.svg?style=flat-square)](https://github.com/mwat56/passlist/blob/master/_demo/pwaccess.go)
+[![License](https://img.shields.io/eclipse-marketplace/l/notepad4e.svg)](https://github.com/mwat56/passlist/blob/master/LICENSE)
+
+- [PassList](#passlist)
+	- [Purpose](#purpose)
+	- [Installation](#installation)
+	- [Usage](#usage)
+	- [Licence](#licence)
 
 ## Purpose
 
@@ -12,7 +20,7 @@ It offers to simply integrate the popular [BasicAuth](https://en.wikipedia.org/w
 
 You can use `Go` to install this package for you:
 
-    go get -u github.com/mwat56/go-passlist
+    go get -u github.com/mwat56/passlist
 
 ## Usage
 
@@ -38,13 +46,13 @@ The arguments mean:
 
 So, in short: implement the `TAuthDecider` interface and call `passlist.Wrap(…)`, and you're done.
 
-However, the package provides a `TPassList` class with lots of methods to works with a username/password list.
+However, the package provides a `TPassList` class with methods to work with a username/password list.
 It's fairly well documented, so it shouldn't be too hard to use it on your own if you don't like the automatic handling provided by `Wrap()`.
-You can create a new instance by either calling `passlist.LoadPasswords(aFilename string)` (which, as it's name says, tries to load the given password file at once), or you call `passlist.NewList(aFilename string)` (which leaves it to you when to actually read the password file by calling the `TPassList` object's `Load()` method).
+You can create a new instance by either calling `passlist.LoadPasswords(aFilename string)` (which, as its name says, tries to load the given password file at once), or you call `passlist.NewList(aFilename string)` (which leaves it to you when to actually read the password file by calling the `TPassList` object's `Load()` method).
 
 There's an additional convenience function called `passlist.Deny()` which sends an "Unauthorised" notice to the remote host in case the remote user couldn't be authenticated; this function is called internally whenever your `TAuthDecider` required authentication and wasn't given valid credentials from the remote user.
 
-Please refer to the [source code documentation](https://godoc.org/github.com/mwat56/go-passlist#TPassList) for further details ot the `TPassList` class.
+Please refer to the [source code documentation](https://godoc.org/github.com/mwat56/passlist#TPassList) for further details ot the `TPassList` class.
 
 In the package's `_demo` folder you'll find the `pwaccess.go` program which implements the maintainance of password files with the following options:
 
