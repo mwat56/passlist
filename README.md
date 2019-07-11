@@ -4,11 +4,11 @@
 [![view examples](https://img.shields.io/badge/learn%20by-examples-0077b3.svg?style=flat-square)](https://github.com/mwat56/passlist/blob/master/_demo/pwaccess.go)
 [![License](https://img.shields.io/eclipse-marketplace/l/notepad4e.svg)](https://github.com/mwat56/passlist/blob/master/LICENSE)
 
-- [PassList](#passlist)
-	- [Purpose](#purpose)
-	- [Installation](#installation)
-	- [Usage](#usage)
-	- [Licence](#licence)
+- [PassList](#PassList)
+	- [Purpose](#Purpose)
+	- [Installation](#Installation)
+	- [Usage](#Usage)
+	- [Licence](#Licence)
 
 ## Purpose
 
@@ -28,7 +28,8 @@ You can use `Go` to install this package for you:
 
     NeedAuthentication(aRequest *http.Request) bool
 
-That function may decide on whatever means whether to grant access (returning `true`)) or deny it (returning `false`).
+That function may decide on whatever means whether to grant access (returning `true`) or deny it (returning `false`).
+
 For your ease there are two `TAuthDecider` implementations provided: `TAuthSkipper` (which generally returns `false`) and `TAuthSkipper` (which generally returns `true`).
 Just instanciate one of those – or, of course, your own implementation – and pass it to the `Wrap()` function.
 
@@ -50,7 +51,19 @@ However, the package provides a `TPassList` class with methods to work with a us
 It's fairly well documented, so it shouldn't be too hard to use it on your own if you don't like the automatic handling provided by `Wrap()`.
 You can create a new instance by either calling `passlist.LoadPasswords(aFilename string)` (which, as its name says, tries to load the given password file at once), or you call `passlist.NewList(aFilename string)` (which leaves it to you when to actually read the password file by calling the `TPassList` object's `Load()` method).
 
-There's an additional convenience function called `passlist.Deny()` which sends an "Unauthorised" notice to the remote host in case the remote user couldn't be authenticated; this function is called internally whenever your `TAuthDecider` required authentication and wasn't given valid credentials from the remote user.
+There's an additional convenience function called `passlist.Deny()` which sends an _"Unauthorised"_ notice to the remote host in case the remote user couldn't be authenticated; this function is called internally whenever your `TAuthDecider` required authentication and wasn't given valid credentials from the remote user.
+
+To further improve the safety of the passwords they are _peppered_ before hashing and storing them.
+The default pepper value can be read by calling
+
+	pepper := passlist.Pepper()
+
+And the pepper value can be changed by calling
+
+	myPepper := "This is my common 'pepper' value for the user passwords"
+	passlist.SetPepper(myPepper)
+
+> Please **note** that changing the pepper value _after_ storing user/password pairs will invalidate all existing userlist entries.
 
 Please refer to the [source code documentation](https://godoc.org/github.com/mwat56/passlist#TPassList) for further details ot the `TPassList` class.
 
@@ -70,7 +83,7 @@ In the package's `_demo` folder you'll find the `pwaccess.go` program which impl
     -upd string
         <username> name of the user to update in the file (prompting for the password)
 
- > **Note**: To be on the safe side your web-server schould use `HTTPS` instead of plain old `HTTP` to avoid the chance of someone eavesdropping on the username/password exchange.
+> **Note**: To be on the safe side your web-server should use `HTTPS` instead of plain old `HTTP` to avoid the chance of someone eavesdropping on the username/password exchange.
 
 ## Licence
 
