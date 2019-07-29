@@ -1,5 +1,5 @@
 /*
-Package passlist provides `BasicAuth` for Go web-servers.
+Package passlist provides a `BasicAuth` middleware plugin for Go web-servers.
 
     Copyright © 2019 M.Watermann, 10247 Berlin, Germany
                     All rights reserved
