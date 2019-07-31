@@ -149,7 +149,7 @@ func run(aArgs tArgumentList) (rExit bool) {
 	}
 
 	if adduser, ok := aArgs["add"]; ok {
-		ul.Load() // ignore error since the file might not exist yet
+		_ = ul.Load() // ignore error since the file might not exist yet
 		if ok := ul.Exists(adduser); ok {
 			fmt.Fprintf(os.Stderr, "\n\t'%s' already exists in list\n", adduser)
 			return

@@ -272,7 +272,7 @@ func (ul *TPassList) Store() (int, error) {
 	// prepare the data to write beforehand:
 	s := []byte(ul.String())
 
-	file, err := os.OpenFile(ul.filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0660)
+	file, err := os.OpenFile(ul.filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0660) // #nosec G302
 	if err != nil {
 		return 0, err
 	}
