@@ -6,6 +6,8 @@
 
 package passlist
 
+//lint:file-ignore ST1017 - I prefer Yoda conditions
+
 import (
 	"bufio"
 	"errors"
