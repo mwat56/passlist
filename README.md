@@ -37,7 +37,7 @@ You can use `Go` to install this package for you:
 That function may decide on whatever means whether to grant access (returning `true`) or deny it (returning `false`).
 
 For your ease there are two `TAuthDecider` implementations provided: `TAuthSkipper` (which generally returns `false`) and `TAuthSkipper` (which generally returns `true`).
-Just instanciate one of those – or, of course, your own implementation – and pass it to the `Wrap()` function.
+Just instantiate one of those – or, of course, your own implementation – and pass it to the `Wrap()` function.
 
     func Wrap(aHandler http.Handler, aRealm, aPasswdFile string, aAuthDecider TAuthDecider) http.Handler
 
@@ -73,7 +73,7 @@ And the pepper value can be changed by calling
 
 Please refer to the [source code documentation](https://godoc.org/github.com/mwat56/passlist#TPassList) for further details ot the `TPassList` class.
 
-In the package's `_demo` folder you'll find the `pwaccess.go` program which implements the maintainance of password files with the following options:
+In the package's `_demo` folder you'll find the `pwaccess.go` program which implements the maintenance of password files with the following options:
 
     -add string
         <username> name of the user to add to the file (prompting for the password)
