@@ -73,7 +73,7 @@ And the pepper value can be changed by calling
 
 Please refer to the [source code documentation](https://godoc.org/github.com/mwat56/passlist#TPassList) for further details ot the `TPassList` class.
 
-In the package's `_demo` folder you'll find the `pwaccess.go` program which implements the maintenance of password files with the following options:
+In the package's `cmd/` folder you'll find the `pwaccess.go` program which implements the maintenance of password files with the following options:
 
     -add string
         <username> name of the user to add to the file (prompting for the password)
