@@ -218,7 +218,7 @@ func (ul *TPassList) Matches(aUser, aPassword string) (rOK bool) {
 	return (nil == err)
 } // Matches()
 
-// read parses the a file using `aScanner`, returning
+// `read()` parses the a file using `aScanner`, returning
 // the number of bytes read and a possible error.
 //
 // This method reads one line of the file at a time skipping both
@@ -238,12 +238,8 @@ func (ul *TPassList) read(aScanner *bufio.Scanner) (rRead int, rErr error) {
 			continue
 		}
 
-		if (0 < len(line)) && (';' != line[0]) && ('#' != line[0]) {
-			// Skip empty and comment lines
-			if parts := strings.SplitN(line, ":", 2); 2 == len(parts) {
-				ul.add0(strings.TrimSpace(parts[0]),
-					strings.TrimSpace(parts[1]))
-			}
+		if parts := strings.SplitN(line, ":", 2); 2 == len(parts) {
+			ul.add0(strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1]))
 		}
 	}
 	rErr = aScanner.Err()

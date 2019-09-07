@@ -95,7 +95,7 @@ In the package's `cmd/` folder you'll find the `pwaccess.go` program which imple
 
 The following external libraries were used building `PassList`:
 
-* [Crypto](https://golang.org/x/crypto)
+* [Crypto](https://godoc.org/golang.org/x/crypto)
 
 ## Licence
 
