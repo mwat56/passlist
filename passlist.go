@@ -157,7 +157,8 @@ func (ul *TPassList) IsAuthenticated(aRequest *http.Request) bool {
 	if err := bcrypt.CompareHashAndPassword([]byte(pwHash), []byte(pass+pwPepper)); nil != err {
 		return false
 	}
-	// store the user info so others can check for it
+
+	// Store the user info so others can check for it
 	aRequest.URL.User = url.UserPassword(user, pwHash)
 
 	return true
@@ -348,8 +349,8 @@ func LoadPasswords(aFilename string) (*TPassList, error) {
 func NewList(aFilename string) (rList *TPassList) {
 	if 0 < len(aFilename) {
 		rList = &TPassList{
-			/* filename: */ aFilename,
-			/* um: */ make(tUserMap, 64),
+			filename: aFilename,
+			um:       make(tUserMap, 64),
 		}
 	}
 
