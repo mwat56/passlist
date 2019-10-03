@@ -70,6 +70,7 @@ func AddUser(aUser, aFilename string) {
 	if Verbose {
 		fmt.Printf("\tadded '%s' to list\n\n", aUser)
 	}
+
 	os.Exit(0)
 } // AddUser()
 
@@ -94,6 +95,7 @@ func CheckUser(aUser, aFilename string) {
 	if Verbose {
 		fmt.Printf("\n\t'%s' password check %s\n\n", aUser, pw)
 	}
+
 	os.Exit(exitCode)
 } // CheckUser()
 
@@ -123,29 +125,17 @@ func DeleteUser(aUser, aFilename string) {
 	if Verbose {
 		fmt.Printf("\n\tremoved '%s' from list\n\n", aUser)
 	}
+
 	os.Exit(0)
 } // DeleteUser()
 
-// userlist returns a new `TPassList` instance.
-func userlist(aFilename string) (rList *TPassList) {
-	rList, err := LoadPasswords(aFilename)
-	if nil != err {
-		if Verbose {
-			fmt.Fprintf(os.Stderr, "can't open/create password list '%s'\n", aFilename)
-		}
-		os.Exit(1)
-	}
-
-	return
-} // userlist()
-
-// ListUser reads `aFilename` and lists all users stored in there.
+// ListUsers reads `aFilename` and lists all users stored in there.
 //
 // NOTE: This function does not return but terminates the program
 // with error code `0` (zero) if successful, or `1` (one) otherwise.
 //
 //	`aFilename` name of the password file to use.
-func ListUser(aFilename string) {
+func ListUsers(aFilename string) {
 	ul := userlist(aFilename)
 	list := ul.List()
 	if 0 == len(list) {
@@ -154,12 +144,14 @@ func ListUser(aFilename string) {
 		}
 		os.Exit(1)
 	}
-	s := strings.Join(list, "\n") + "\n"
-	fmt.Println(s)
+	fmt.Println(strings.Join(list, "\n") + "\n")
+
 	os.Exit(0)
-} // ListUser()
+} // ListUsers()
 
 // `readPassword()` asks the user to input a password on the commandline.
+//
+// `aRepeat` determines whether to ask for a password repeat or not.
 func readPassword(aRepeat bool) (rPass string) {
 	var (
 		pw1, pw2 string
@@ -230,7 +222,23 @@ func UpdateUser(aUser, aFilename string) {
 	if Verbose {
 		fmt.Printf("\tupdated user '%s' in list\n\n", aUser)
 	}
+
 	os.Exit(0)
 } // UpdateUser()
+
+// `userlist()` returns a new `TPassList` instance.
+//
+//	`aFilename` name of the password file to use.
+func userlist(aFilename string) (rList *TPassList) {
+	rList, err := LoadPasswords(aFilename)
+	if nil != err {
+		if Verbose {
+			fmt.Fprintf(os.Stderr, "can't open/create password list '%s'\n", aFilename)
+		}
+		os.Exit(1)
+	}
+
+	return
+} // userlist()
 
 /* _EoF_ */
