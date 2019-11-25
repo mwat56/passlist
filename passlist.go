@@ -67,7 +67,7 @@ type (
 	// `tPassList` is the container for user map and filename.
 	tPassList struct {
 		filename string   // name of passwd file
-		um       tUserMap // list of user/password pairs
+		usermap  tUserMap // list of user/password pairs
 	}
 )
 
@@ -91,27 +91,27 @@ func (ul *TPassList) Add(aUser, aPassword string) error {
 	//NOTE: the greater the cost factor below the slower it becomes
 	hash, err := bcrypt.GenerateFromPassword([]byte(aPassword+pwPepper), 6)
 	if nil == err {
-		ul.um[aUser] = string(hash)
+		ul.usermap[aUser] = string(hash)
 	}
 
 	return err
 } // Add()
 
-// add0 inserts `aUser` with `aHashedPW` into the list.
+// `add0()` inserts `aUser` with `aHashedPW` into the list.
 //
 //	`aUser` is the username to use.
 //
 //	`aHashedPW` is the user's hashed password to store.
 func (ul *TPassList) add0(aUser, aHashedPW string) *TPassList {
-	ul.um[aUser] = aHashedPW
+	ul.usermap[aUser] = aHashedPW
 
 	return ul
 } // add0()
 
 // Clear empties the internal data structure.
 func (ul *TPassList) Clear() *TPassList {
-	for user := range ul.um {
-		delete(ul.um, user)
+	for user := range ul.usermap {
+		delete(ul.usermap, user)
 	}
 
 	return ul
@@ -122,7 +122,7 @@ func (ul *TPassList) Clear() *TPassList {
 //
 //	`aUser` is the username to lookup.
 func (ul *TPassList) Exists(aUser string) (rOK bool) {
-	_, rOK = ul.um[aUser]
+	_, rOK = ul.usermap[aUser]
 
 	return
 } // Exists()
@@ -132,7 +132,7 @@ func (ul *TPassList) Exists(aUser string) (rOK bool) {
 //
 //	`aUser` is the username to lookup.
 func (ul *TPassList) Find(aUser string) (rHash string, rOK bool) {
-	rHash, rOK = ul.um[aUser]
+	rHash, rOK = ul.usermap[aUser]
 
 	return
 } // Find()
@@ -166,15 +166,15 @@ func (ul *TPassList) IsAuthenticated(aRequest *http.Request) bool {
 
 // Len returns the actual length of the userlist.
 func (ul *TPassList) Len() int {
-	return len(ul.um)
+	return len(ul.usermap)
 } // Len()
 
 // List returns a list of all usernames in the list.
 func (ul *TPassList) List() (rList []string) {
-	if 0 == len(ul.um) {
+	if 0 == len(ul.usermap) {
 		return
 	}
-	for user := range ul.um {
+	for user := range ul.usermap {
 		rList = append(rList, user)
 	}
 	sort.Slice(rList, func(i, j int) bool {
@@ -210,7 +210,7 @@ func (ul *TPassList) Load() error {
 //
 //	`aPassword` the (unhashed) password to check.
 func (ul *TPassList) Matches(aUser, aPassword string) (rOK bool) {
-	hash1, ok := ul.um[aUser]
+	hash1, ok := ul.usermap[aUser]
 	if !ok {
 		return
 	}
@@ -252,7 +252,7 @@ func (ul *TPassList) read(aScanner *bufio.Scanner) (rRead int, rErr error) {
 //
 //	`aUser` is the username to remove.
 func (ul *TPassList) Remove(aUser string) *TPassList {
-	delete(ul.um, aUser)
+	delete(ul.usermap, aUser)
 
 	return ul
 } // Remove()
@@ -280,11 +280,11 @@ func (ul *TPassList) Store() (int, error) {
 
 // String returns the list as a single, LF-separated string.
 func (ul *TPassList) String() string {
-	if 0 == len(ul.um) {
+	if 0 == len(ul.usermap) {
 		return ""
 	}
 	var list []string
-	for name, pass := range ul.um {
+	for name, pass := range ul.usermap {
 		list = append(list, name+":"+pass)
 	}
 	sort.Slice(list, func(i, j int) bool {
@@ -300,20 +300,20 @@ type (
 	// TAuthDecider is an interface deciding whether a given URL
 	// needs authentication or not.
 	TAuthDecider interface {
-		// NeedAuthentication returns `true` if authentication is needed,
-		// or `false` otherwise.
+		// NeedAuthentication returns `true` if authentication
+		// is required, or `false` otherwise.
 		//
-		// `aRequest` holds the URL to check.
+		//	`aRequest` holds the URL to check.
 		NeedAuthentication(aRequest *http.Request) bool
 	}
 
 	// TAuthSkipper provides a `TAuthDecider` implementation
 	// always returning `false`.
-	TAuthSkipper bool
+	TAuthSkipper int
 
 	// TAuthNeeder provides a `TAuthDecider` implementation
 	// always returning `true`.
-	TAuthNeeder bool
+	TAuthNeeder int
 )
 
 // NeedAuthentication returns `false` thus skipping any authentication.
@@ -321,7 +321,8 @@ func (ad TAuthSkipper) NeedAuthentication(aRequest *http.Request) bool {
 	return false
 } // NeedAuthentication
 
-// NeedAuthentication returns `true` thus requiring authentication for any URL.
+// NeedAuthentication returns `true` thus requiring authentication
+// for any URL.
 func (ad TAuthNeeder) NeedAuthentication(aRequest *http.Request) bool {
 	return true
 } // NeedAuthentication
@@ -350,7 +351,7 @@ func NewList(aFilename string) (rList *TPassList) {
 	if 0 < len(aFilename) {
 		rList = &TPassList{
 			filename: aFilename,
-			um:       make(tUserMap, 64),
+			usermap:  make(tUserMap, 64),
 		}
 	}
 

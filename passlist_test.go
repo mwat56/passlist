@@ -18,7 +18,7 @@ func prepDB() *TPassList {
 	fn1, _ := filepath.Abs("./testlist.db")
 	return &TPassList{
 		filename: fn1,
-		um:       make(tUserMap),
+		usermap:       make(tUserMap),
 	}
 } // prepDB()
 
