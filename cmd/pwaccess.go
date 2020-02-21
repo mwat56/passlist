@@ -1,5 +1,5 @@
 /*
-   Copyright © 2019 M.Watermann, 10247 Berlin, Germany
+   Copyright © 2019, 2020 M.Watermann, 10247 Berlin, Germany
                    All rights reserved
                 EMail : <support@mwat.de>
 */
@@ -50,7 +50,7 @@ func getArguments() tArgumentList {
 
 	result := make(tArgumentList)
 	if 0 < len(fileStr) {
-		fileStr, _ := filepath.Abs(fileStr)
+		fileStr, _ = filepath.Abs(fileStr)
 		result["filename"] = fileStr
 	}
 	if 0 < len(addStr) {
