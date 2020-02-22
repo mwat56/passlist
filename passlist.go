@@ -11,6 +11,7 @@ package passlist
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -138,30 +139,30 @@ func (ul *TPassList) Find(aUser string) (rHash string, rOK bool) {
 } // Find()
 
 // IsAuthenticated checks `aRequest` for authentication data,
-// returning `true` for successful authentication, or `false` otherwise.
+// returning `nil` for successful authentication, or an `error` otherwise.
 //
 // On success the username/password are stored in the `aRequest.URL.User`
 // structure to allow for other handlers checking its existence and act
 // accordingly.
 //
 //	`aRequest` is an HTTP request received by a server.
-func (ul *TPassList) IsAuthenticated(aRequest *http.Request) bool {
+func (ul *TPassList) IsAuthenticated(aRequest *http.Request) error {
 	user, pass, ok := aRequest.BasicAuth()
 	if !ok {
-		return false
+		return errors.New(`IsAuthenticated: missing authentication data`)
 	}
 	pwHash, ok := ul.Find(user)
 	if !ok {
-		return false
+		return errors.New(`IsAuthenticated: unknown user`)
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(pwHash), []byte(pass+pwPepper)); nil != err {
-		return false
+		return fmt.Errorf(`IsAuthenticated: %w`, err)
 	}
 
 	// Store the user info so others can check for it
 	aRequest.URL.User = url.UserPassword(user, pwHash)
 
-	return true
+	return nil
 } // IsAuthenticated()
 
 // Len returns the actual length of the userlist.
@@ -379,7 +380,7 @@ func Wrap(aHandler http.Handler, aRealm, aPasswdFile string, aAuthDecider TAuthD
 	return http.HandlerFunc(
 		func(aWriter http.ResponseWriter, aRequest *http.Request) {
 			if aAuthDecider.NeedAuthentication(aRequest) {
-				if !ul.IsAuthenticated(aRequest) {
+				if err := ul.IsAuthenticated(aRequest); nil != err {
 					Deny(aRealm, aWriter)
 					return
 				}
