@@ -1,5 +1,5 @@
 /*
-   Copyright © 2019 M.Watermann, 10247 Berlin, Germany
+   Copyright © 2019, 2020 M.Watermann, 10247 Berlin, Germany
                    All rights reserved
                EMail : <support@mwat.de>
 */
@@ -18,7 +18,7 @@ func prepDB() *TPassList {
 	fn1, _ := filepath.Abs("./testlist.db")
 	return &TPassList{
 		filename: fn1,
-		usermap:       make(tUserMap),
+		usermap:  make(tUserMap),
 	}
 } // prepDB()
 
@@ -258,7 +258,7 @@ func TestTUserList_Remove(t *testing.T) {
 		want *TPassList
 	}{
 		// TODO: Add test cases.
-		{" 1", ul1, args{"nodody"}, wl1},
+		{" 1", ul1, args{"nobody"}, wl1},
 		{" 2", ul1, args{u1}, wl2},
 		{" 3", ul1, args{u2}, wl3},
 	}
