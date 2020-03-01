@@ -341,7 +341,7 @@ func TestTUserList_Load(t *testing.T) {
 	u2, p2 := "username2", xxHash("password2")
 	u3, p3 := "username3", xxHash("password3")
 	ul1 := prepDB().add0(u1, p1).add0(u2, p2).add0(u3, p3)
-	ul1.Store()
+	_, _ = ul1.Store()
 	tests := []struct {
 		name    string
 		ul      *TPassList
@@ -366,7 +366,7 @@ func TestLoadPasswords(t *testing.T) {
 	u2, p2 := "username2", xxHash("password2")
 	u3, p3 := "username3", xxHash("password3")
 	ul1 := prepDB().add0(u1, p1).add0(u2, p2).add0(u3, p3)
-	ul1.Store()
+	_, _ = ul1.Store()
 	wl1 := &TPassList{
 		ul1.filename,
 		tUserMap{
