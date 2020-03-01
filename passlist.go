@@ -284,7 +284,8 @@ func (ul *TPassList) String() string {
 	if 0 == len(ul.usermap) {
 		return ""
 	}
-	var list []string
+
+	list := make([]string, 0, len(ul.usermap))
 	for name, pass := range ul.usermap {
 		list = append(list, name+":"+pass)
 	}
