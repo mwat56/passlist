@@ -6,8 +6,8 @@
 [![Issues](https://img.shields.io/github/issues/mwat56/passlist.svg)](https://github.com/mwat56/passlist/issues?q=is%3Aopen+is%3Aissue)
 [![Size](https://img.shields.io/github/repo-size/mwat56/passlist.svg)](https://github.com/mwat56/passlist/)
 [![Tag](https://img.shields.io/github/tag/mwat56/passlist.svg)](https://github.com/mwat56/passlist/tags)
-[![License](https://img.shields.io/github/license/mwat56/passlist.svg)](https://github.com/mwat56/passlist/blob/master/LICENSE)
-[![View examples](https://img.shields.io/badge/learn%20by-examples-0077b3.svg)](https://github.com/mwat56/passlist/blob/master/cmd/pwaccess.go)
+[![License](https://img.shields.io/github/license/mwat56/passlist.svg)](https://github.com/mwat56/passlist/blob/main/LICENSE)
+[![View examples](https://img.shields.io/badge/learn%20by-examples-0077b3.svg)](https://github.com/mwat56/passlist/blob/main/cmd/pwaccess.go)
 
 - [PassList](#passlist)
 	- [Purpose](#purpose)
