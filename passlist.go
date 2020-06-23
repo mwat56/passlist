@@ -1,5 +1,5 @@
 /*
-   Copyright © 2019 M.Watermann, 10247 Berlin, Germany
+   Copyright © 2019, 2020 M.Watermann, 10247 Berlin, Germany
                    All rights reserved
                EMail : <support@mwat.de>
 */
@@ -24,9 +24,8 @@ import (
 
 // Deny sends an "Unauthorised" notice to the remote host.
 //
-//	`aRealm` is the symbolic name of the host/domain to protect.
-//
-//	`aWriter` is used by an HTTP handler to construct an HTTP response.
+//	`aRealm` The symbolic name of the host/domain to protect.
+//	`aWriter` Used by an HTTP handler to construct an HTTP response.
 func Deny(aRealm string, aWriter http.ResponseWriter) {
 	if 0 == len(aRealm) {
 		aRealm = "Default"
@@ -52,7 +51,7 @@ func Pepper() string {
 // If the given `aPepper` value is an empty string it is ignored
 // and the current pepper value remains unchanged.
 //
-//	`aPepper` is the new pepper value to use.
+//	`aPepper` The new pepper value to use.
 func SetPepper(aPepper string) {
 	if 0 < len(aPepper) {
 		pwPepper = aPepper
@@ -62,7 +61,7 @@ func SetPepper(aPepper string) {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 type (
-	// `tUserMap` is a password list indexed by username
+	// `tUserMap` is a password list indexed by username.
 	tUserMap map[string]string
 
 	// `tPassList` is the container for user map and filename.
@@ -70,18 +69,17 @@ type (
 		filename string   // name of passwd file
 		usermap  tUserMap // list of user/password pairs
 	}
-)
 
-// TPassList holds the list of username/password values.
-type TPassList tPassList
+	// TPassList holds the list of username/password values.
+	TPassList tPassList
+)
 
 // Add inserts `aUser` with `aPassword` into the list.
 //
 // Before storing `aPassword` it gets peppered and hashed.
 //
-//	`aUser` is the username to use.
-//
-//	`aPassword` is the user's password to store.
+//	`aUser` The new user's name to use.
+//	`aPassword` The user's password to store.
 func (ul *TPassList) Add(aUser, aPassword string) error {
 	if 0 == len(aUser) {
 		return errors.New("TPassList.Add(): missing username")
@@ -100,9 +98,8 @@ func (ul *TPassList) Add(aUser, aPassword string) error {
 
 // `add0()` inserts `aUser` with `aHashedPW` into the list.
 //
-//	`aUser` is the username to use.
-//
-//	`aHashedPW` is the user's hashed password to store.
+//	`aUser` The username to use.
+//	`aHashedPW` The user's password hash to store.
 func (ul *TPassList) add0(aUser, aHashedPW string) *TPassList {
 	ul.usermap[aUser] = aHashedPW
 
@@ -121,7 +118,7 @@ func (ul *TPassList) Clear() *TPassList {
 // Exists returns `true` if `aUser` exists in the list,
 // or `false` if not found.
 //
-//	`aUser` is the username to lookup.
+//	`aUser` The username to lookup.
 func (ul *TPassList) Exists(aUser string) (rOK bool) {
 	_, rOK = ul.usermap[aUser]
 
@@ -131,7 +128,7 @@ func (ul *TPassList) Exists(aUser string) (rOK bool) {
 // Find returns the hashed password of `aUser` and `true`,
 // or an empty string and `false` if not found.
 //
-//	`aUser` is the username to lookup.
+//	`aUser` The username to lookup.
 func (ul *TPassList) Find(aUser string) (rHash string, rOK bool) {
 	rHash, rOK = ul.usermap[aUser]
 
@@ -145,7 +142,7 @@ func (ul *TPassList) Find(aUser string) (rHash string, rOK bool) {
 // structure to allow for other handlers checking its existence and act
 // accordingly.
 //
-//	`aRequest` is an HTTP request received by a server.
+//	`aRequest` The HTTP request received by a server.
 func (ul *TPassList) IsAuthenticated(aRequest *http.Request) error {
 	user, pass, ok := aRequest.BasicAuth()
 	if !ok {
@@ -165,7 +162,7 @@ func (ul *TPassList) IsAuthenticated(aRequest *http.Request) error {
 	return nil
 } // IsAuthenticated()
 
-// Len returns the actual length of the userlist.
+// Len returns the number of entries in the userlist.
 func (ul *TPassList) Len() int {
 	return len(ul.usermap)
 } // Len()
@@ -207,9 +204,8 @@ func (ul *TPassList) Load() error {
 // Matches checks whether `aPassword` of `aUser` matches
 // the stored password.
 //
-//	`aUser` the username to lookup.
-//
-//	`aPassword` the (unhashed) password to check.
+//	`aUser` The username to lookup.
+//	`aPassword` The (unhashed) password to check.
 func (ul *TPassList) Matches(aUser, aPassword string) (rOK bool) {
 	hash1, ok := ul.usermap[aUser]
 	if !ok {
@@ -251,7 +247,7 @@ func (ul *TPassList) read(aScanner *bufio.Scanner) (rRead int, rErr error) {
 
 // Remove deletes `aUser` from the list.
 //
-//	`aUser` is the username to remove.
+//	`aUser` The username to remove.
 func (ul *TPassList) Remove(aUser string) *TPassList {
 	delete(ul.usermap, aUser)
 
@@ -332,14 +328,18 @@ func (ad TAuthNeeder) NeedAuthentication(aRequest *http.Request) bool {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 // LoadPasswords reads the given `aFilename` returning a `TUserList`
-// instance filled with data read from the password file and a possible
-// error condition.
+// instance filled with data read from the password file and a
+// possible error condition.
 //
-// This function reads one line at a time of the password file skipping
-// both empty lines and comments (identified by `#` or `;` at line start).
+// This function reads one line at a time of the password file
+// skipping both empty lines and comments (identified by `#` or
+// `;` at line start).
 //
-//	`aFilename` is the name of the password file to read.
+//	`aFilename` The name of the password file to read.
 func LoadPasswords(aFilename string) (*TPassList, error) {
+	if 0 == len(aFilename) {
+		return nil, errors.New(`passlist.LoadPasswords(): missing file name`)
+	}
 	ul := NewList(aFilename)
 
 	return ul, ul.Load()
@@ -347,17 +347,17 @@ func LoadPasswords(aFilename string) (*TPassList, error) {
 
 // NewList returns a new `TUserList` instance.
 //
-//	`aFilename` is the name of the password file to use for
+//	`aFilename` The name of the password file to use for
 // `Load()` and `Store()`
-func NewList(aFilename string) (rList *TPassList) {
-	if 0 < len(aFilename) {
-		rList = &TPassList{
-			filename: aFilename,
-			usermap:  make(tUserMap, 64),
-		}
+func NewList(aFilename string) *TPassList {
+	if 0 == len(aFilename) {
+		return nil
 	}
 
-	return
+	return &TPassList{
+		filename: aFilename,
+		usermap:  make(tUserMap, 64),
+	}
 } // NewList()
 
 // Wrap returns a handler function that includes authentication,
@@ -365,30 +365,48 @@ func NewList(aFilename string) (rList *TPassList) {
 //
 //	`aHandler` responds to the actual HTTP request; this is
 // the handler to be called after successful authentication.
-//
-//	`aRealm` is the symbolic name of the domain/host to protect.
-//
-//	`aPasswdFile` is the name of the password file to use.
+//	`aRealm` The symbolic name of the domain/host to protect.
+//	`aPasswdFile` The name of the password file to use.
+//	`aAuthDecider`
 func Wrap(aHandler http.Handler, aRealm, aPasswdFile string, aAuthDecider TAuthDecider) http.Handler {
-	ul, err := LoadPasswords(aPasswdFile)
-	if nil != err {
-		log.Printf("passlist.Wrap(): %v\nAUTHENTICATION DISABLED!", err)
-		// we can't do anything about it, so we skip
-		// the whole authentication procedure
+	if 0 == len(aPasswdFile) {
+		log.Print("passlist.Wrap(): missing password file\nAUTHENTICATION DISABLED!\n")
+		// Without a password file we can't do authentication.
 		return aHandler
 	}
 
-	return http.HandlerFunc(
-		func(aWriter http.ResponseWriter, aRequest *http.Request) {
-			if aAuthDecider.NeedAuthentication(aRequest) {
-				if err := ul.IsAuthenticated(aRequest); nil != err {
-					Deny(aRealm, aWriter)
-					return
-				}
+	if nil == aAuthDecider {
+		log.Print("passlist.Wrap(): missing AuthDecider\nAUTHENTICATION DISABLED!\n")
+		// Without a decider we skip the authentication procedure.
+		return aHandler
+	}
+
+	ul, err := LoadPasswords(aPasswdFile)
+	if nil != err {
+		log.Printf("passlist.Wrap(): %v\nAUTHENTICATION DISABLED!\n", err)
+		// We can't do anything w/o password file, so we skip
+		// the whole authentication procedure.
+		return aHandler
+	}
+
+	if 0 < len(aRealm) {
+		aRealm = `<unknown>`
+	}
+
+	newHandler := func(aWriter http.ResponseWriter, aRequest *http.Request) {
+		if aAuthDecider.NeedAuthentication(aRequest) {
+			// `ul` and `aRealm` are defined in the embedding closure (above).
+			if err := ul.IsAuthenticated(aRequest); nil != err {
+				Deny(aRealm, aWriter)
+				return
 			}
-			// call the original handler
-			aHandler.ServeHTTP(aWriter, aRequest)
-		})
+		}
+
+		// Call the previous/original handler:
+		aHandler.ServeHTTP(aWriter, aRequest)
+	}
+
+	return http.HandlerFunc(newHandler)
 } // Wrap()
 
 /* _EoF_ */

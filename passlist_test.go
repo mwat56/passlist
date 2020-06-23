@@ -22,6 +22,46 @@ func prepDB() *TPassList {
 	}
 } // prepDB()
 
+func TestLoadPasswords(t *testing.T) {
+	u1, p1 := "username1", xxHash("password1")
+	u2, p2 := "username2", xxHash("password2")
+	u3, p3 := "username3", xxHash("password3")
+	ul1 := prepDB().add0(u1, p1).add0(u2, p2).add0(u3, p3)
+	_, _ = ul1.Store()
+	wl1 := &TPassList{
+		ul1.filename,
+		tUserMap{
+			u1: p1,
+			u2: p2,
+			u3: p3,
+		},
+	}
+	type args struct {
+		aFilename string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *TPassList
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{" 1", args{ul1.filename}, wl1, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := LoadPasswords(tt.args.aFilename)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadPasswords() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("LoadPasswords() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+} // TestLoadPasswords()
+
 func TestNewList(t *testing.T) {
 	wl1 := prepDB()
 	type args struct {
@@ -232,6 +272,31 @@ func TestTUserList_List(t *testing.T) {
 	}
 } // TestTUserList_List()
 
+func TestTUserList_Load(t *testing.T) {
+	u1, p1 := "username1", xxHash("password1")
+	u2, p2 := "username2", xxHash("password2")
+	u3, p3 := "username3", xxHash("password3")
+	ul1 := prepDB().add0(u1, p1).add0(u2, p2).add0(u3, p3)
+	_, _ = ul1.Store()
+	tests := []struct {
+		name    string
+		ul      *TPassList
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{" 1", ul1, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.ul.Load()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("TUserList.Load() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+} // TestTUserList_Load()
+
 func TestTUserList_Remove(t *testing.T) {
 	u1, p1 := "username1", "password1"
 	u2, p2 := "username2", "password2"
@@ -335,68 +400,3 @@ func TestTUserList_String(t *testing.T) {
 		})
 	}
 } // TestTUserList_String()
-
-func TestTUserList_Load(t *testing.T) {
-	u1, p1 := "username1", xxHash("password1")
-	u2, p2 := "username2", xxHash("password2")
-	u3, p3 := "username3", xxHash("password3")
-	ul1 := prepDB().add0(u1, p1).add0(u2, p2).add0(u3, p3)
-	_, _ = ul1.Store()
-	tests := []struct {
-		name    string
-		ul      *TPassList
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-		{" 1", ul1, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.ul.Load()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("TUserList.Load() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-		})
-	}
-} // TestTUserList_Load()
-
-func TestLoadPasswords(t *testing.T) {
-	u1, p1 := "username1", xxHash("password1")
-	u2, p2 := "username2", xxHash("password2")
-	u3, p3 := "username3", xxHash("password3")
-	ul1 := prepDB().add0(u1, p1).add0(u2, p2).add0(u3, p3)
-	_, _ = ul1.Store()
-	wl1 := &TPassList{
-		ul1.filename,
-		tUserMap{
-			u1: p1,
-			u2: p2,
-			u3: p3,
-		},
-	}
-	type args struct {
-		aFilename string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *TPassList
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-		{" 1", args{ul1.filename}, wl1, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := LoadPasswords(tt.args.aFilename)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("LoadPasswords() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("LoadPasswords() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-} // TestLoadPasswords()
