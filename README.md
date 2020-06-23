@@ -17,6 +17,8 @@
 	- [Libraries](#libraries)
 	- [Licence](#licence)
 
+----
+
 ## Purpose
 
 Sometimes there is a need to password-protect your web-server, either in whole or just some parts of it.
@@ -30,6 +32,12 @@ It offers to simply integrate the popular [BasicAuth](https://en.wikipedia.org/w
 You can use `Go` to install this package for you:
 
     go get -u github.com/mwat56/passlist
+
+Then in your application you add
+
+    import "github.com/mwat56/passlist"
+
+and use the provided functions (discussed below) as you see fit.
 
 ## Usage
 
@@ -46,7 +54,7 @@ Just instantiate one of those – or, of course, your own implementation – and
 
 The arguments mean:
 
-* `aHandler`: the HTTP handler you implemented for your web-server; you will use the return value of `Wrap()` after you called this function.
+* `aHandler`: the HTTP handler you implemented for your web-server; you will use the return value of `Wrap()` instead after you called this function.
 
 * `aRealm`: the name of the host/domain to protect (this can be any string you like); it will be shown by most browsers when the username/password is requested.
 
@@ -121,3 +129,5 @@ The following external libraries were used building `PassList`:
 > This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 >
 > You should have received a copy of the GNU General Public License along with this program.  If not, see the [GNU General Public License](http://www.gnu.org/licenses/gpl.html) for details.
+
+----
