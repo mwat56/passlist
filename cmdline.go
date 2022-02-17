@@ -1,5 +1,5 @@
 /*
-   Copyright © 2019 M.Watermann, 10247 Berlin, Germany
+   Copyright © 2019, 2022 M.Watermann, 10247 Berlin, Germany
                All rights reserved
            EMail : <support@mwat.de>
 */
@@ -19,7 +19,7 @@ import (
 	"strings"
 	"syscall"
 
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 var (
@@ -161,7 +161,7 @@ func readPassword(aRepeat bool) (rPass string) {
 	)
 	for {
 		fmt.Print("\n password: ")
-		if bPW, err = terminal.ReadPassword(syscall.Stdin); err == nil {
+		if bPW, err = term.ReadPassword(syscall.Stdin); err == nil {
 			if 0 < len(bPW) {
 				rPass = string(bPW)
 			} else {
@@ -171,7 +171,7 @@ func readPassword(aRepeat bool) (rPass string) {
 		}
 		if aRepeat {
 			fmt.Print("\nrepeat pw: ")
-			if bPW, err = terminal.ReadPassword(syscall.Stdin); err == nil {
+			if bPW, err = term.ReadPassword(syscall.Stdin); err == nil {
 				if 0 < len(bPW) {
 					pw2 = string(bPW)
 				} else {
