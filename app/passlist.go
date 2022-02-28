@@ -44,8 +44,8 @@ func getArguments() tArgumentList {
 	flag.CommandLine.StringVar(&updStr, "upd", "",
 		"<username> name of the user to update in the file (prompting for the password)")
 
-	flag.Usage = showHelp
-	flag.Parse()
+	flag.CommandLine.Usage = showHelp
+	flag.CommandLine.Parse(os.Args[1:])
 
 	result := make(tArgumentList)
 	if 0 < len(fileStr) {
@@ -104,7 +104,7 @@ func run(aArgs tArgumentList) {
 // showHelp lists the commandline options to `Stderr`.
 func showHelp() {
 	fmt.Fprintf(os.Stderr, "\nUsage: %s [OPTIONS]\n\n", os.Args[0])
-	flag.PrintDefaults()
+	flag.CommandLine.PrintDefaults()
 	fmt.Fprint(os.Stderr, "\n")
 } // showHelp()
 
