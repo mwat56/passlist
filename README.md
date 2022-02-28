@@ -47,7 +47,7 @@ and use the provided functions (discussed below) as you see fit.
 
 That function may decide on whatever means necessary whether to grant access (returning `true`) or deny it (returning `false`).
 
-For your ease there are two `TAuthDecider` implementations provided: `TAuthSkipper` (which generally returns `false`) and `TAuthSkipper` (which generally returns `true`).
+For your ease there are two `TAuthDecider` implementations provided: `TAuthSkipper` (which generally returns `false`) and `TAuthNeeder` (which generally returns `true`).
 Just instantiate one of those – or, of course, your own implementation – and pass it to the `Wrap()` function.
 
     func Wrap(aHandler http.Handler, aRealm, aPasswdFile string, aAuthDecider TAuthDecider) http.Handler
@@ -84,21 +84,21 @@ And the _pepper_ value can be changed by calling
 
 Please refer to the [source code documentation](https://godoc.org/github.com/mwat56/passlist#TPassList) for further details ot the `TPassList` class.
 
-In the package's `cmd/` folder you'll find the `pwaccess.go` program which implements the maintenance of password files with the following options:
+In the package's `./app` folder you'll find the `passlist.go` program which implements the maintenance of password files with the following options:
 
-    -add string
-        <username> name of the user to add to the file (prompting for the password)
-    -chk string
-        <username> name of the user whose pass to check (prompting for the password)
-    -del string
-        <username> name of the user to remove from the file
-    -file string
-        <filename> name of the passwordfile to use (default "pwaccess.db")
-    -lst
-        list all current usernames from the list
-    -q    whether to be quiet or not (suppress screen output)
-    -upd string
-        <username> name of the user to update in the file (prompting for the password)
+	-add string
+		<username> name of the user to add to the file (prompting for the password)
+	-chk string
+		<username> name of the user whose pass to check (prompting for the password)
+	-del string
+		<username> name of the user to remove from the file
+	-file string
+		<filename> name of the passwordfile to use (default "pwaccess.db")
+	-lst
+		list all current usernames from the list
+	-q    whether to be quiet or not (suppress screen output)
+	-upd string
+		<username> name of the user to update in the file (prompting for the password)
 
 ## Password list
 
@@ -114,13 +114,13 @@ This library provides a couple of functions you can use in your own program to m
 
 ## Libraries
 
-The following external libraries were used building `PassList`:
+The following external libraries are used building `PassList`:
 
-* [Crypto](https://godoc.org/golang.org/x/crypto)
+* [Crypto](https://godoc.org/golang.org/x/crypto) supplementary Go cryptography libraries.
 
 ## Licence
 
-    Copyright © 2019, 2021  M.Watermann, 10247 Berlin, Germany
+    Copyright © 2019, 2022  M.Watermann, 10247 Berlin, Germany
                     All rights reserved
                 EMail : <support@mwat.de>
 
