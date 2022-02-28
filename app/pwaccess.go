@@ -1,9 +1,8 @@
 /*
-   Copyright © 2019, 2020 M.Watermann, 10247 Berlin, Germany
+   Copyright © 2019, 2022 M.Watermann, 10247 Berlin, Germany
                    All rights reserved
                 EMail : <support@mwat.de>
 */
-
 package main
 
 //lint:file-ignore ST1017 - I prefer Yoda conditions
@@ -30,19 +29,19 @@ func getArguments() tArgumentList {
 		lstBool, quietBool                      bool
 	)
 
-	flag.StringVar(&addStr, "add", "",
+	flag.CommandLine.StringVar(&addStr, "add", "",
 		"<username> name of the user to add to the file (prompting for the password)")
-	flag.StringVar(&chkStr, "chk", "",
+	flag.CommandLine.StringVar(&chkStr, "chk", "",
 		"<username> name of the user whose pass to check (prompting for the password)")
-	flag.StringVar(&delStr, "del", "",
+	flag.CommandLine.StringVar(&delStr, "del", "",
 		"<username> name of the user to remove from the file")
-	flag.StringVar(&fileStr, "file", "pwaccess.db",
+	flag.CommandLine.StringVar(&fileStr, "file", "pwaccess.db",
 		"<filename> name of the passwordfile to use")
-	flag.BoolVar(&lstBool, "lst", false,
+	flag.CommandLine.BoolVar(&lstBool, "lst", false,
 		"list all current usernames from the list")
-	flag.BoolVar(&quietBool, "q", false,
+	flag.CommandLine.BoolVar(&quietBool, "q", false,
 		"whether to be quiet or not (suppress screen output)")
-	flag.StringVar(&updStr, "upd", "",
+	flag.CommandLine.StringVar(&updStr, "upd", "",
 		"<username> name of the user to update in the file (prompting for the password)")
 
 	flag.Usage = showHelp
