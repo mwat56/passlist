@@ -73,7 +73,7 @@ func getArguments() tArgumentList {
 	return result
 } // getArguments()
 
-// run is the main program, externalised for easier testing.
+// `run()` is the main program, externalised for easier testing.
 func run(aArgs tArgumentList) {
 	if q, ok := aArgs["quiet"]; ok {
 		passlist.Verbose = ("true" != q)
@@ -101,7 +101,7 @@ func run(aArgs tArgumentList) {
 	}
 } // run()
 
-// showHelp lists the commandline options to `Stderr`.
+// `showHelp()` lists the commandline options to `Stderr`.
 func showHelp() {
 	fmt.Fprintf(os.Stderr, "\nUsage: %s [OPTIONS]\n\n", os.Args[0])
 	flag.CommandLine.PrintDefaults()
