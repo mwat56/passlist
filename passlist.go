@@ -1,7 +1,8 @@
 /*
-   Copyright © 2019, 2022 M.Watermann, 10247 Berlin, Germany
-                   All rights reserved
-               EMail : <support@mwat.de>
+Copyright © 2019, 2024  M.Watermann, 10247 Berlin, Germany
+
+	    All rights reserved
+	EMail : <support@mwat.de>
 */
 package passlist
 
@@ -347,6 +348,7 @@ func LoadPasswords(aFilename string) (*TPassList, error) {
 // NewList returns a new `TUserList` instance.
 //
 //	`aFilename` The name of the password file to use for
+//
 // `Load()` and `Store()`
 func NewList(aFilename string) *TPassList {
 	if 0 == len(aFilename) {
@@ -359,25 +361,27 @@ func NewList(aFilename string) *TPassList {
 	}
 } // NewList()
 
-// Wrap returns a handler function that includes authentication,
-// wrapping the given `aHandler` and calling it internally.
+// `Wrap ()`returns a handler function that includes authentication,
+// wrapping the given `aNext` and calling it internally.
 //
-//	`aHandler` responds to the actual HTTP request; this is
+//	`aNext` responds to the actual HTTP request; this is
+//
 // the handler to be called after successful authentication.
+//
 //	`aRealm` The symbolic name of the domain/host to protect.
 //	`aPasswdFile` The name of the password file to use.
 //	`aAuthDecider`
-func Wrap(aHandler http.Handler, aRealm, aPasswdFile string, aAuthDecider TAuthDecider) http.Handler {
+func Wrap(aNext http.Handler, aRealm, aPasswdFile string, aAuthDecider TAuthDecider) http.Handler {
 	if 0 == len(aPasswdFile) {
 		log.Print("passlist.Wrap(): missing password file\nAUTHENTICATION DISABLED!\n")
 		// Without a password file we can't do authentication.
-		return aHandler
+		return aNext
 	}
 
 	if nil == aAuthDecider {
 		log.Print("passlist.Wrap(): missing AuthDecider\nAUTHENTICATION DISABLED!\n")
 		// Without a decider we skip the authentication procedure.
-		return aHandler
+		return aNext
 	}
 
 	ul, err := LoadPasswords(aPasswdFile)
@@ -385,7 +389,7 @@ func Wrap(aHandler http.Handler, aRealm, aPasswdFile string, aAuthDecider TAuthD
 		log.Printf("passlist.Wrap(): %v\nAUTHENTICATION DISABLED!\n", err)
 		// We can't do anything w/o password file, so we skip
 		// the whole authentication procedure.
-		return aHandler
+		return aNext
 	}
 
 	if 0 < len(aRealm) {
@@ -402,7 +406,7 @@ func Wrap(aHandler http.Handler, aRealm, aPasswdFile string, aAuthDecider TAuthD
 		}
 
 		// Call the previous/original handler:
-		aHandler.ServeHTTP(aWriter, aRequest)
+		aNext.ServeHTTP(aWriter, aRequest)
 	}
 
 	return http.HandlerFunc(newHandler)
