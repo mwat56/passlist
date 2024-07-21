@@ -1,8 +1,10 @@
 /*
-   Copyright © 2019, 2022 M.Watermann, 10247 Berlin, Germany
-                   All rights reserved
-               EMail : <support@mwat.de>
+Copyright © 2019, 2024 M.Watermann, 10247 Berlin, Germany
+
+			All rights reserved
+		EMail : <support@mwat.de>
 */
+
 package passlist
 
 import (
@@ -17,7 +19,7 @@ func prepDB() *TPassList {
 	fn1, _ := filepath.Abs("./testlist.db")
 	return &TPassList{
 		filename: fn1,
-		usermap:  make(tUserMap),
+		usermap:  make(tUserMap, 32),
 	}
 } // prepDB()
 

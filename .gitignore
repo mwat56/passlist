@@ -1,7 +1,8 @@
-*~
-app/passlist
 *.db
-.git/
 *.ini
-TODO*
+*~
+.git/
 .vscode/
+TODO*
+app/passlist
+bin/*

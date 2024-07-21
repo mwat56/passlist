@@ -1,11 +1,11 @@
 /*
-   Copyright © 2019, 2022 M.Watermann, 10247 Berlin, Germany
-                   All rights reserved
-                EMail : <support@mwat.de>
-*/
-package main
+Copyright © 2019, 2024  M.Watermann, 10247 Berlin, Germany
 
-//lint:file-ignore ST1017 - I prefer Yoda conditions
+			All rights reserved
+		EMail : <support@mwat.de>
+*/
+
+package main
 
 import (
 	"flag"
@@ -15,6 +15,8 @@ import (
 
 	"github.com/mwat56/passlist"
 )
+
+//lint:file-ignore ST1017 - I prefer Yoda conditions
 
 type (
 	// `tArgumentList` is the list type returned by `getArguments()`

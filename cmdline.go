@@ -1,11 +1,11 @@
 /*
-   Copyright © 2019, 2022 M.Watermann, 10247 Berlin, Germany
-               All rights reserved
-           EMail : <support@mwat.de>
-*/
-package passlist
+Copyright © 2019, 2024 M.Watermann, 10247 Berlin, Germany
 
-//lint:file-ignore ST1017 - I prefer Yoda conditions
+			All rights reserved
+		EMail : <support@mwat.de>
+*/
+
+package passlist
 
 /*
  * This file provides functions to maintain the user/password list
@@ -21,27 +21,31 @@ import (
 	"golang.org/x/term"
 )
 
+//lint:file-ignore ST1017 - I prefer Yoda conditions
+
 var (
-	// Verbose determines whether or not to print some output
-	// when executing the commands.
+	// `Verbose` determines whether or not to print some output
+	// when executing the commandline functions.
 	Verbose = true
 )
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+// --------------------------------------------------------------------------
 
-// AddUser reads a password for `aUser` from the commandline
+// `AddUser()` reads a password for `aUser` from the commandline
 // and adds it to `aFilename`.
 //
 // NOTE: This function does not return but terminates the program
 // with error code `0` (zero) if successful, or `1` (one) otherwise.
 //
-//	`aUser` the username to add to the password file.
-//	`aFilename` name of the password file to use.
+// Parameters:
+//   - `aUser`: The username to add to the password file.
+//   - `aFilename`: The name of the password file to use.
 func AddUser(aUser, aFilename string) {
 	var ( // re-use variables
 		err error
 		ok  bool
 	)
+
 	ul := NewList(aFilename)
 	if nil == ul {
 		if Verbose {
@@ -49,6 +53,7 @@ func AddUser(aUser, aFilename string) {
 		}
 		os.Exit(1)
 	}
+
 	_ = ul.Load() // ignore error since the file might not exist yet
 	if ok = ul.Exists(aUser); ok {
 		if Verbose {
@@ -56,6 +61,7 @@ func AddUser(aUser, aFilename string) {
 		}
 		os.Exit(1)
 	}
+
 	pw := readPassword(true)
 	if err = ul.Add(aUser, pw); nil != err {
 		if Verbose {
@@ -63,6 +69,7 @@ func AddUser(aUser, aFilename string) {
 		}
 		os.Exit(1)
 	}
+
 	if _, err = ul.Store(); nil != err {
 		if Verbose {
 			fmt.Fprintf(os.Stderr, "\n\tcan't store modified list: %v\n", err)
@@ -76,14 +83,15 @@ func AddUser(aUser, aFilename string) {
 	os.Exit(0)
 } // AddUser()
 
-// CheckUser reads a password for `aUser` from the commandline
+// `CheckUser()` reads a password for `aUser` from the commandline
 // and compares it with the one stored in `aFilename`.
 //
 // NOTE: This function does not return but terminates the program
 // with error code `0` (zero) if successful, or `1` (one) otherwise.
 //
-//	`aUser` the username to check in the password file.
-//	`aFilename` name of the password file to use.
+// Parameters:
+//   - `aUser`: The username to check with the password file.
+//   - `aFilename`: The name of the password file to use.
 func CheckUser(aUser, aFilename string) {
 	exitCode := 0
 	ul := userlist(aFilename)
@@ -100,14 +108,15 @@ func CheckUser(aUser, aFilename string) {
 	os.Exit(exitCode)
 } // CheckUser()
 
-// DeleteUser removes the entry for `aUser` from the password
+// `DeleteUser()` removes the entry for `aUser` from the password
 // list `aFilename`.
 //
 // NOTE: This function does not return but terminates the program
 // with error code `0` (zero) if successful, or `1` (one) otherwise.
 //
-//	`aUser` the username to remove from the password file.
-//	`aFilename` name of the password file to use.
+// Parameters:
+//   - `aUser`: The username to delete from the password file.
+//   - `aFilename`: The name of the password file to use.
 func DeleteUser(aUser, aFilename string) {
 	ul := userlist(aFilename)
 	if ok := ul.Exists(aUser); !ok {
@@ -116,6 +125,7 @@ func DeleteUser(aUser, aFilename string) {
 		}
 		os.Exit(1)
 	}
+
 	if _, err := ul.Remove(aUser).Store(); nil != err {
 		if Verbose {
 			fmt.Fprintf(os.Stderr, "\n\tcan't store modified list: %v\n", err)
@@ -129,12 +139,13 @@ func DeleteUser(aUser, aFilename string) {
 	os.Exit(0)
 } // DeleteUser()
 
-// ListUsers reads `aFilename` and lists all users stored in there.
+// `ListUsers()` reads `aFilename` and lists all users stored in there.
 //
 // NOTE: This function does not return but terminates the program
 // with error code `0` (zero) if successful, or `1` (one) otherwise.
 //
-//	`aFilename` name of the password file to use.
+// Parameters:
+//   - `aFilename`: The name of the password file to use.
 func ListUsers(aFilename string) {
 	ul := userlist(aFilename)
 	list := ul.List()
@@ -151,7 +162,11 @@ func ListUsers(aFilename string) {
 
 // `readPassword()` asks the user to input a password on the commandline.
 //
-// `aRepeat` determines whether to ask for a password repeat or not.
+// Parameters:
+//   - `aRepeat`: Decide whether to ask for a password repeat or not.
+//
+// Returns:
+//   - `string`: The user's new password.
 func readPassword(aRepeat bool) (rPass string) {
 	var ( // re-use variables
 		bPW []byte
@@ -168,6 +183,7 @@ func readPassword(aRepeat bool) (rPass string) {
 				continue
 			}
 		}
+
 		if aRepeat {
 			fmt.Print("\nrepeat pw: ")
 			if bPW, err = term.ReadPassword(syscall.Stdin); err == nil {
@@ -184,6 +200,7 @@ func readPassword(aRepeat bool) (rPass string) {
 		if rPass == pw2 {
 			break
 		}
+
 		fmt.Fprintln(os.Stderr, "\n\tthe two passwords don't match")
 	}
 	fmt.Print("\n")
@@ -191,16 +208,18 @@ func readPassword(aRepeat bool) (rPass string) {
 	return
 } // readPassword()
 
-// UpdateUser reads a password for `aUser` from the commandline
+// `UpdateUser()` reads a password for `aUser` from the commandline
 // and updates the entry in the password list `aFilename`.
 //
 // NOTE: This function does not return but terminates the program
 // with error code `0` (zero) if successful, or `1` (one) otherwise.
 //
-//	`aUser` the username to remove from the password file.
-//	`aFilename` name of the password file to use.
+// Parameters:
+//   - `aUser`: The username to update in the password file.
+//   - `aFilename`: The name of the password file to use.
 func UpdateUser(aUser, aFilename string) {
 	var err error
+
 	ul := userlist(aFilename)
 	if ok := ul.Exists(aUser); !ok {
 		if Verbose {
@@ -208,6 +227,7 @@ func UpdateUser(aUser, aFilename string) {
 		}
 		os.Exit(1)
 	}
+
 	pw := readPassword(true)
 	if err = ul.Add(aUser, pw); nil != err {
 		if Verbose {
@@ -215,6 +235,7 @@ func UpdateUser(aUser, aFilename string) {
 		}
 		os.Exit(1)
 	}
+
 	if _, err = ul.Store(); nil != err {
 		if Verbose {
 			fmt.Fprintf(os.Stderr, "\n\tcan't store modified list: %v\n", err)
@@ -232,7 +253,8 @@ func UpdateUser(aUser, aFilename string) {
 //
 // NOTE: This function terminates in case of errors.
 //
-//	`aFilename` name of the password file to use.
+// Parameters:
+//   - `aFilename`: The name of the password file to use.
 func userlist(aFilename string) (rList *TPassList) {
 	var err error
 	if rList, err = LoadPasswords(aFilename); nil != err {
