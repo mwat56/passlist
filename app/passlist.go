@@ -12,7 +12,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/mwat56/passlist"
+	ul "github.com/mwat56/passlist"
 )
 
 //lint:file-ignore ST1017 - I prefer Yoda conditions
@@ -77,28 +77,28 @@ func getArguments() tArgumentList {
 // `run()` is the main program, externalised for easier testing.
 func run(aArgs tArgumentList) {
 	if q, ok := aArgs["quiet"]; ok {
-		passlist.Verbose = ("true" != q)
+		ul.Verbose = ("true" != q)
 	}
 	fn := aArgs["filename"]
 
 	if adduser, ok := aArgs["add"]; ok {
-		passlist.AddUser(adduser, fn)
+		ul.AddUser(adduser, fn)
 	}
 
 	if chkuser, ok := aArgs["chk"]; ok {
-		passlist.CheckUser(chkuser, fn)
+		ul.CheckUser(chkuser, fn)
 	}
 
 	if deluser, ok := aArgs["del"]; ok {
-		passlist.DeleteUser(deluser, fn)
+		ul.DeleteUser(deluser, fn)
 	}
 
 	if lst, ok := aArgs["lst"]; ok && ("true" == lst) {
-		passlist.ListUsers(fn)
+		ul.ListUsers(fn)
 	}
 
 	if upduser, ok := aArgs["upd"]; ok {
-		passlist.UpdateUser(upduser, fn)
+		ul.UpdateUser(upduser, fn)
 	}
 } // run()
 
