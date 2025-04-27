@@ -64,7 +64,7 @@ func Pepper() string {
 // Parameters:
 //   - `aPepper`: The new pepper value to use.
 func SetPepper(aPepper string) {
-	if 0 < len(aPepper) {
+	if aPepper = strings.TrimSpace(aPepper); "" != aPepper {
 		pwPepper = aPepper
 	}
 } // SetPepper()
@@ -86,40 +86,47 @@ type (
 )
 
 // --------------------------------------------------------------------------
-// Constructor functions
+// Constructor functions:
 
-// `LoadPasswords()` reads the given `aFilename` returning a `TUserList`
+// `LoadPasswords()` reads the given `aFilename` returning a `TPassList`
 // instance filled with data read from the password file and a
 // possible error condition.
+//
+// If `aFilename` is empty the function returns `nil` and an error.
+//
+// The file format is one user/password pair per line with the
+// username and password separated by a colon (`:`).
 //
 // This function reads one line at a time of the password file
 // skipping both empty lines and comments (identified by `#` or
 // `;` at a line's start).
 //
 // Parameters:
-//   - `aFilename`: The name of the password file to use for [Load] and [Store].
+//   - `aFilename`: Name of the password file to use by [Load] and [Store].
 //
 // Returns:
-//   - `*TPassList`: A new `TUserList` instance
+//   - `*TPassList`: A new `TPassList` instance
 //   - `error`: A possible error during processing the request.
 func LoadPasswords(aFilename string) (*TPassList, error) {
-	if 0 == len(aFilename) {
-		return nil, se.New(errors.New(`missing file name`), 2)
-	}
 	ul := New(aFilename)
+	if nil == ul {
+		return nil, se.New(errors.New(`missing/empty file name`), 2)
+	}
 
 	return ul, ul.Load()
 } // LoadPasswords()
 
-// `New()` returns a new `TUserList` instance.
+// `New()` returns a new `TPassList` instance.
+//
+// If `aFilename` is empty the function returns `nil`.
 //
 // Parameters:
-//   - `aFilename` The name of the password file to use for [Load] and [Store].
+//   - `aFilename`: Name of the password file to use by [Load] and [Store].
 //
 // Returns:
-//   - `*TPassList`: A new `TUserList` instance
+//   - `*TPassList`: A new `TPassList` instance
 func New(aFilename string) *TPassList {
-	if 0 == len(aFilename) {
+	if aFilename = strings.TrimSpace(aFilename); "" == aFilename {
 		return nil
 	}
 
@@ -129,7 +136,7 @@ func New(aFilename string) *TPassList {
 	}
 } // New()
 
-// `NewList()` returns a new `TUserList` instance.
+// `NewList()` returns a new `TPassList` instance.
 //
 // Deprecated: Use [New] instead.
 func NewList(aFilename string) *TPassList {
@@ -137,9 +144,11 @@ func NewList(aFilename string) *TPassList {
 } // NewList()
 
 // --------------------------------------------------------------------------
-// TPosting methods
+// `TPassList` methods:
 
 // `Add()` inserts `aUser` with `aPassword` into the list.
+//
+// If either `aUser` or `aPassword` is empty the method returns an error.
 //
 // Before storing `aPassword` it gets peppered and hashed.
 //
@@ -150,11 +159,11 @@ func NewList(aFilename string) *TPassList {
 // Returns:
 //   - `error`: A possible error during processing the request.
 func (ul *TPassList) Add(aUser, aPassword string) error {
-	if 0 == len(aUser) {
-		return se.New(errors.New("missing username"), 1)
+	if aUser = strings.TrimSpace(aUser); "" == aUser {
+		return se.New(errors.New("missing/empty username"), 1)
 	}
-	if 0 == len(aPassword) {
-		return se.New(errors.New("missing password"), 1)
+	if aPassword = strings.TrimSpace(aPassword); "" == aPassword {
+		return se.New(errors.New("missing/empty password"), 1)
 	}
 
 	//NOTE: the greater the cost factor below the slower it becomes
@@ -169,6 +178,8 @@ func (ul *TPassList) Add(aUser, aPassword string) error {
 
 // `add0()` inserts `aUser` with `aHashedPW` into the list.
 //
+// If either `aUser` or `aHashedPW` is empty the method returns `nil`.
+//
 // Parameters:
 //   - `aUser` The username to use.
 //   - `aHashedPW` The user's password hash to store.
@@ -176,6 +187,13 @@ func (ul *TPassList) Add(aUser, aPassword string) error {
 // Returns:
 //   - `*TPassList`: The update list.
 func (ul *TPassList) add0(aUser, aHashedPW string) *TPassList {
+	if aUser = strings.TrimSpace(aUser); "" == aUser {
+		return nil
+	}
+	if aHashedPW = strings.TrimSpace(aHashedPW); "" == aHashedPW {
+		return nil
+	}
+
 	ul.usermap[aUser] = aHashedPW
 
 	return ul
@@ -196,12 +214,17 @@ func (ul *TPassList) Clear() *TPassList {
 // `Exists()` returns `true` if `aUser` exists in the list,
 // or `false` if not found.
 //
+// If `aUser` is empty the method returns `false`.
+//
 // Parameters:
 //   - `aUser`: The username to lookup.
 //
 // Returns:
 //   - `bool`: `true` if the user as was found, or `false` otherwise.
 func (ul *TPassList) Exists(aUser string) bool {
+	if aUser = strings.TrimSpace(aUser); "" == aUser {
+		return false
+	}
 	_, ok := ul.usermap[aUser]
 
 	return ok
@@ -210,6 +233,8 @@ func (ul *TPassList) Exists(aUser string) bool {
 // `Find()` returns the hashed password of `aUser` and `nil`,
 // or an error if not found.
 //
+// If `aUser` is empty the method returns an error.
+//
 // Parameters:
 //   - `aUser`: The username to lookup.
 //
@@ -217,6 +242,9 @@ func (ul *TPassList) Exists(aUser string) bool {
 //   - `string`: The user's password hash.
 //   - `error`: `nil` if the user as was found, or an error otherwise.
 func (ul *TPassList) Find(aUser string) (string, error) {
+	if aUser = strings.TrimSpace(aUser); "" == aUser {
+		return "", se.New(errors.New("missing/empty username"), 2)
+	}
 	hash, ok := ul.usermap[aUser]
 	if !ok {
 		return "", se.New(errors.New("unknown user"), 2)
@@ -292,8 +320,8 @@ func (ul *TPassList) List() []string {
 // Returns:
 //   - `error`: A possible error during processing the request.
 func (ul *TPassList) Load() error {
-	if 0 == len(ul.filename) {
-		return se.New(errors.New("missing filename"), 1)
+	if "" == ul.filename {
+		return se.New(errors.New("missing/empty filename"), 1)
 	}
 
 	file, err := os.Open(ul.filename)
@@ -308,8 +336,10 @@ func (ul *TPassList) Load() error {
 	return err // already wrapped
 } // Load()
 
-// `Matches()` checks whether `aPassword` of `aUser` matches
-// the stored user/password pair.
+// `Matches()` checks whether `aPassword` of `aUser` matches a stored
+// user/password pair.
+//
+// If either `aUser` or `aPassword` is empty the method returns `false`.
 //
 // Parameters:
 //   - `aUser`: The username to lookup.
@@ -318,10 +348,18 @@ func (ul *TPassList) Load() error {
 // Returns:
 //   - `bool`: `true` if a match was found, or `false` otherwise.
 func (ul *TPassList) Matches(aUser, aPassword string) bool {
+	if aUser = strings.TrimSpace(aUser); "" == aUser {
+		return false
+	}
+	if aPassword = strings.TrimSpace(aPassword); "" == aPassword {
+		return false
+	}
+
 	pwHash, ok := ul.usermap[aUser]
 	if !ok {
-		return ok
+		return false
 	}
+
 	err := bcrypt.CompareHashAndPassword([]byte(pwHash), []byte(aPassword+pwPepper))
 
 	return (nil == err)
@@ -382,14 +420,14 @@ func (ul *TPassList) Remove(aUser string) *TPassList {
 // if it already exists.
 //
 // The method uses the filename given to the [LoadPasswords] or
-// [New] function.
+// [New] functions.
 //
 // Returns:
 //   - `int`: The number of bytes written.
 //   - `error`: A possible error during processing the request.
 func (ul *TPassList) Store() (int, error) {
-	if 0 == len(ul.filename) {
-		return 0, se.New(errors.New("missing filename"), 1)
+	if "" == ul.filename {
+		return 0, se.New(errors.New("missing/empty filename"), 1)
 	}
 	// To keep the file-open time as small as possible we
 	// prepare the data to write beforehand:
@@ -482,7 +520,7 @@ func (as TAuthSkipper) NeedAuthentication(aRequest *http.Request) bool {
 //   - `aPasswdFile`: The name of the password file to use.
 //   - `aAuthDecider`:
 func Wrap(aNext http.Handler, aRealm, aPasswdFile string, aAuthDecider IAuthDecider) http.Handler {
-	if 0 == len(aPasswdFile) {
+	if aPasswdFile = strings.TrimSpace(aPasswdFile); "" == aPasswdFile {
 		log.Print("passlist.Wrap(): missing password file\nAUTHENTICATION DISABLED!\n")
 		// Without a password file we can't do authentication.
 		return aNext
