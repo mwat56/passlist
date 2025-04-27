@@ -1,10 +1,9 @@
 /*
-Copyright © 2019, 2024  M.Watermann, 10247 Berlin, Germany
+Copyright © 2019, 2025  M.Watermann, 10247 Berlin, Germany
 
-			All rights reserved
-		EMail : <support@mwat.de>
+	    All rights reserved
+	EMail : <support@mwat.de>
 */
-
 package main
 
 import (
@@ -37,7 +36,7 @@ func getArguments() tArgumentList {
 		"<username> name of the user whose pass to check (prompting for the password)")
 	flag.CommandLine.StringVar(&delStr, "del", "",
 		"<username> name of the user to remove from the file")
-	flag.CommandLine.StringVar(&fileStr, "file", "pwaccess.db",
+	flag.CommandLine.StringVar(&fileStr, "file", "./.pwaccess.db",
 		"<filename> name of the passwordfile to use")
 	flag.CommandLine.BoolVar(&lstBool, "lst", false,
 		"list all current usernames from the list")
@@ -47,7 +46,7 @@ func getArguments() tArgumentList {
 		"<username> name of the user to update in the file (prompting for the password)")
 
 	flag.CommandLine.Usage = showHelp
-	flag.CommandLine.Parse(os.Args[1:])
+	flag.CommandLine.Parse(os.Args[1:]) //#nosec G104
 
 	result := make(tArgumentList)
 	if 0 < len(fileStr) {
