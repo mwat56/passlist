@@ -17,6 +17,8 @@
 		- [HTTP handler](#http-handler)
 		- [The user/password list](#the-userpassword-list)
 		- [Access denial](#access-denial)
+		- [Security](#security)
+	- [Commandline tool](#commandline-tool)
 	- [Libraries](#libraries)
 	- [Licence](#licence)
 
@@ -74,7 +76,7 @@ So, in short: implement the `IAuthDecider` interface and call `passlist.Wrap(…
 
 ### The user/password list
 
-The package provides a `TPassList` class with methods to work with a username/password list. It's fairly well [documented](https://pkg.go.dev/github.com/mwat56/passlist), so it shouldn't be too hard to use it on your own if you don't like the automatic handling provided by `Wrap()`. You can create a new instance by either calling `passlist.LoadPasswords(aFilename string)` (which, as its name says, tries to load the given password file at once), or you call `passlist.NewList(aFilename string)` (which leaves it to you when to actually read the password file by calling the `TPassList` object's `Load()` method).
+The package provides a `TPassList` class with methods to work with a username/password list. It's fairly well [documented](https://pkg.go.dev/github.com/mwat56/passlist), so it shouldn't be too hard to use it on your own if you don't like the automatic handling provided by `Wrap()`. You can create a new instance by either calling `passlist.LoadPasswords(aFilename string)` (which, as its name says, tries to load the given password file at once), or you call `passlist.New(aFilename string)` (which leaves it to you when to actually read the password file by calling the `TPassList` object's `Load()` method).
 
 This library provides a couple of functions you can use in your own program to maintain your own password list without having to use the `TPassList` class directly.
 
@@ -90,19 +92,24 @@ This library provides a couple of functions you can use in your own program to m
 
 There's an additional convenience function called `passlist.Deny()` which sends an _"Unauthorised"_ notice to the remote host in case the remote user couldn't be authenticated; this function is called internally whenever your `TAuthDecider` required authentication and wasn't given valid credentials from the remote user.
 
+### Security
+
 To further improve the safety of the passwords they are _peppered_ before hashing and storing them.
-The default _pepper_ value can be read by calling
+
+The default _pepper_ value can be read by calling:
 
 	pepper := passlist.Pepper()
 
-And the _pepper_ value can be changed by calling
+And the _pepper_ value can be changed by calling:
 
 	myPepper := "This is my common 'pepper' value for the user passwords"
 	passlist.SetPepper(myPepper)
 
-> **Note**: Changing the _pepper_ value _after_ storing user/password pairs will invalidate all existing userlist entries!
+> **Note**: Changing the _pepper_ value _after_ storing user/password pairs **will** invalidate all existing userlist entries!
 
 Please refer to the [source code documentation](https://godoc.org/github.com/mwat56/passlist#TPassList) for further details ot the `TPassList` class.
+
+## Commandline tool
 
 In the package's `./app` folder you'll find the `passlist.go` program which implements the maintenance of password files with the following options:
 
@@ -119,15 +126,18 @@ In the package's `./app` folder you'll find the `passlist.go` program which impl
 	-upd string
 		<username> name of the user to update in the file (prompting for the password)
 
+This example app shows how to use the `passlist` package in your own program. Additionally it could be used as a standalone tool to manage your password files.
+
 ## Libraries
 
 The following external libraries are used building `PassList`:
 
 * [bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt) supplementary Go cryptography library.
+* [SourceError](https://github.com/mwat56/sourceerror) improved error handling.
 
 ## Licence
 
-    Copyright © 2019, 2024  M.Watermann, 10247 Berlin, Germany
+    Copyright © 2019, 2025  M.Watermann, 10247 Berlin, Germany
                     All rights reserved
                 EMail : <support@mwat.de>
 
