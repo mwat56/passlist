@@ -132,8 +132,10 @@ This example app shows how to use the `passlist` package in your own program. Ad
 
 The following external libraries are used building `PassList`:
 
-* [bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt) supplementary Go cryptography library.
+* [BCrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt) supplementary Go cryptography library.
 * [SourceError](https://github.com/mwat56/sourceerror) improved error handling.
+* [Syscalls](https://pkg.go.dev/golang.org/x/sys) OS-specific functionality.
+* [Terminal](https://pkg.go.dev/golang.org/x/term) commandline handling.
 
 ## Licence
 
