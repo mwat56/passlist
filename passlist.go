@@ -260,12 +260,18 @@ func (ul *TPassList) Find(aUser string) (string, error) {
 // structure to allow for other handlers checking its existence and act
 // accordingly.
 //
+// If `aRequest` is `nil` the method returns an error.
+//
 // Parameters:
 //   - `aRequest` The HTTP request received by a server.
 //
 // Returns:
 //   - `error`: A possible error during processing the request.
 func (ul *TPassList) IsAuthenticated(aRequest *http.Request) error {
+	if nil == aRequest {
+		return se.New(errors.New("missing `aRequest`"), 2)
+	}
+
 	user, pass, ok := aRequest.BasicAuth()
 	if !ok {
 		return se.New(errors.New(`missing authentication data`), 2)

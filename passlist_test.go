@@ -311,6 +311,7 @@ func Test_TPassList_IsAuthenticated(t *testing.T) {
 		{" 2", ul, req2, true}, // missing auth data
 		{" 3", ul, req3, true}, // wrong password
 		{" 4", ul, req4, true}, // unknown user
+		{" 5", ul, nil, true},  // missing request
 	}
 
 	for _, tt := range tests {
